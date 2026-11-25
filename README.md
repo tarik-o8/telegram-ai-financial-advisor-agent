@@ -4,7 +4,8 @@ An intelligent, bilingual (**English & Bangla**) conversational AI Financial Adv
 
 ## Workflow Architecture
 
-![n8n Telegram AI Agent Architecture](./workflow.png)
+<img width="1235" height="569" alt="workflow2 png" src="https://github.com/user-attachments/assets/3745eba2-0df6-4ce4-9f39-8bd236abeb23" />
+
 
 ## Key Features & Architecture
 
