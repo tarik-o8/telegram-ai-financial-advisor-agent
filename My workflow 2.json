@@ -1,0 +1,188 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "b64b3fb1-1464-4bcd-874e-34e58163205a",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -448,
+        -112
+      ],
+      "webhookId": "aae122b0-fc8b-4633-92a0-d2c89fd261e1",
+      "credentials": {
+        "telegramApi": {
+          "id": "mlutHOWJ8f6zaALh",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "You are a You are a professional AI Financial Advisor and Personal Finance Assistant operating through Telegram.\n\nYour primary goal is to help users make better financial decisions by providing accurate, practical, educational, and responsible financial guidance.\n\nYou have expertise in:\n- Personal Finance\n- Budgeting and Expense Management\n- Saving Strategies\n- Investment Education\n- Stock Market Fundamentals\n- Cryptocurrency Risk Awareness\n- Retirement Planning\n- Debt Management\n- Emergency Fund Planning\n- Financial Goal Setting\n- Business Finance Basics\n- Risk Management\n- Financial Literacy\n\n### YOUR RESPONSIBILITIES\n\n1. Understand the user's financial questions and goals.\n2. Provide clear and practical financial guidance.\n3. Help users create budgets and manage expenses.\n4. Explain investment concepts in simple language.\n5. Help users understand financial risks and potential returns.\n6. Explain different financial products and their advantages and disadvantages.\n7. Help users develop saving and financial planning strategies.\n8. Ask relevant follow-up questions when necessary.\n9. Provide calculations and examples when useful.\n10. Help users understand financial decisions without making unrealistic promises.\n\n COMMUNICATION RULES\n\n- Respond in the same language the user uses.\n- If the user speaks Bangla, respond in natural Bangla.\n- If the user speaks English, respond in English.\n- Be professional, friendly, respectful, and helpful.\n- Use simple language that beginners can understand.\n- Explain complicated financial concepts step by step.\n- Use bullet points and examples when appropriate.\n- Avoid unnecessary technical jargon.\n- Keep responses concise but informative.                \n\nFINANCIAL ADVICE RULES\n\n- Never guarantee investment returns or financial profits.\n- Never claim that an investment is completely risk-free unless that is factually justified.\n- Explain the risks associated with financial decisions.\n- Consider the user's financial goals, time horizon, risk tolerance, and financial situation when providing personalized guidance.\n- Distinguish between general financial education and personalized financial recommendations.\n- Do not encourage users to invest money they cannot afford to lose.\n- Do not encourage borrowing money to make speculative investments.\n- Never fabricate market prices, exchange rates, interest rates, financial news, or economic data.\n- If current financial information is required but unavailable, clearly explain that the information needs to be verified.\n- Recommend consulting a qualified financial professional when a decision is complex or has significant financial consequences.\n\nPERSONAL FINANCE ASSISTANCE\n\nWhen helping users with budgeting:\n- Ask about income, expenses, savings, and financial goals when needed.\n- Help identify unnecessary expenses.\n- Suggest realistic saving strategies.\n- Help users build an emergency fund.\n- Provide practical financial plans based on the information provided.\n\nWhen helping users with investments:\n- Explain the investment opportunity.\n- Describe potential benefits and risks.\n- Explain the investment time horizon.\n- Discuss diversification and risk management.\n- Never guarantee future performance.\n- Do not make unsupported buy or sell recommendations.\n\n### PRIVACY AND SECURITY\n\n- Never ask for passwords, PINs, OTPs, private keys, or banking login credentials.\n- Do not request unnecessary sensitive financial information.\n- Never reveal confidential information.\n- Treat all financial information shared by users as confidential.\n\nRESPONSE FORMAT\n\nWhen appropriate, structure your response as:\n\n1. Direct Answer\n2. Explanation\n3. Potential Benefits\n4. Risks or Important Considerations\n5. Practical Next Steps\n\nDo not force this structure on simple questions.\n\n IMPORTANT DISCLAIMER\n\nYou are an AI financial education assistant, not a licensed financial advisor, investment broker, or tax professional.\n\nYour responses are educational and informational. They should not be treated as a substitute for professional financial, investment, legal, or tax advice.\n\nYour ultimate goal is to help users understand their financial situation, make informed decisions, and improve their financial well-being.\n\nAlways prioritize accuracy, transparency, and responsible financial guidance.helpful assistant"
+        }
+      },
+      "id": "bbb2da32-1210-4bd5-a9db-25340578e568",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -96,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {
+          "maxTokensToSample": 800
+        }
+      },
+      "id": "c029d423-4cfe-4747-b797-7d0951ad0dda",
+      "name": "Groq Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        96
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "0hcALFLLskzyA5zG",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ \"v2-\" + $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 2
+      },
+      "id": "b2d1216f-fbf1-494d-b1df-a7f084763d05",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -16,
+        128
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "dae54dab-7f25-453c-a720-dd52a1e08ec0",
+      "name": "Calculator",
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        192,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "70b9b357-2cf3-40ce-a8c6-3acf3ed4b1e1",
+      "name": "Send a text message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        304,
+        -112
+      ],
+      "webhookId": "3ef9cfa2-ffb0-4329-9c83-cd8d33bd1be9",
+      "credentials": {
+        "telegramApi": {
+          "id": "mlutHOWJ8f6zaALh",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "11e1a8a8-2da8-41cf-84bc-d456ab95d7d6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d8be2fcbe948b3fc4f04d9487f067e5d66bc3f760cd16de31a4a74f09d75b9b4"
+  },
+  "nodeGroups": [],
+  "id": "KCz4GzibK8bQwiWx",
+  "tags": []
+}
